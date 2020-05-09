@@ -4,8 +4,6 @@ private val x = Ket("x", 1.R, 0.R)
 private val y = Ket("y", 0.R, 1.R)
 private val f = Ket("/", 1.0/sqrt(2), 1.0/sqrt(2))
 private val b = Ket("\\", 1.0/sqrt(2), -1.0/sqrt(2))
-private val cw = Ket("↻", 1.0/sqrt(2), I/sqrt(2))
-private val ac = Ket("↺", 1.0/sqrt(2), -I/sqrt(2))
 
 private val eigenVectors = mapOf(
     (x to 1.00) to "x",
@@ -52,6 +50,9 @@ private fun printPrimaryOperators() {
 
 
 //Generic Eigenvector and H operator generator functions
+private val cw = Ket("↻", 1.0/sqrt(2.0), I/sqrt(2.0))
+private val ac = Ket("↺", 1.0/sqrt(2.0), -I/sqrt(2.0))
+
 fun th(angle: Double) = Ket("$angle°", cos(angle.radians), sin(angle.radians))
 
 fun H(angle: Double) = Matrix(2, 2,
@@ -128,6 +129,10 @@ fun main() {
     probabilityOf(prepare = ac, outcome = ac)
     probabilityOf(prepare = f, outcome = cw)
     println()
-    probabilityOf(prepare = th(60.0), outcome = cw)
+    probabilityOf(prepare = cw, outcome = th(180.0))
+    println()
 
+    println("Applying H* Operator: ")
+    println("H*|${cw.label}> = " + (operators["H*"]!! * cw).toBra())
+    println("H*|${ac.label}> =" + (operators["H*"]!! * ac).toBra())
 }
