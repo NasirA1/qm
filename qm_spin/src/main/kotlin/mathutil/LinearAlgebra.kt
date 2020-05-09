@@ -48,7 +48,6 @@ open class AbstractVector(val values: Array<Complex>) {
         values.mapIndexed { j, z -> z * other.values[j] }.sum().re
 }
 
-
 class Ket(val label: String, vararg values: Complex) : AbstractVector(arrayOf(*values)) {
 
     override fun toString(): String {
@@ -163,10 +162,41 @@ data class Matrix(val rows: Int = 2, val cols: Int = 2) {
         return r.toKet()
     }
 
+    operator fun times(scaler: Complex): Matrix = apply { scaler * it }
+
+    //TODO refactor plus and minus into common function to remove duplication
+    operator fun plus(other: Matrix): Matrix {
+        if(cols != other.cols && rows != other.rows) {
+            throw InvalidParameterException("$size matrix cannot be added to ${other.size} matrix.")
+        }
+
+        val r = Matrix(rows, cols)
+        for(i in 0 until rows) {
+            for(j in 0 until cols) {
+                r.matrix[i][j] = matrix[i][j] + other.matrix[i][j]
+            }
+        }
+        return r
+    }
+
+    //TODO refactor plus and minus into common function to remove duplication
+    operator fun minus(other: Matrix): Matrix {
+        if(cols != other.cols && rows != other.rows) {
+            throw InvalidParameterException("${other.size} matrix cannot be subtracted from $size matrix.")
+        }
+
+        val r = Matrix(rows, cols)
+        for(i in 0 until rows) {
+            for(j in 0 until cols) {
+                r.matrix[i][j] = matrix[i][j] - other.matrix[i][j]
+            }
+        }
+        return r
+    }
+
     infix fun `|` (ket: Ket): Ket {
         return this * ket
     }
-
 
     fun toKet(label: String = ""): Ket {
         if(cols != 1) {
@@ -184,30 +214,31 @@ data class Matrix(val rows: Int = 2, val cols: Int = 2) {
         return r.toTypedArray()
     }
 
-
-    fun conj(): Matrix {
+    fun apply(fn: (Complex) -> Complex): Matrix {
         val r = Matrix(rows, cols)
         for(i in 0 until rows) {
             for(j in 0 until cols) {
-                r.matrix[i][j] = matrix[i][j].conj()
+                r.matrix[i][j] = fn(matrix[i][j])
             }
         }
         return r
     }
+
+    fun conj(): Matrix = apply { it.conj() }
 
     fun transpose(): Matrix {
         val r = Matrix(cols, rows)
         for(i in 0 until rows) {
             for(j in 0 until cols) {
-                r.matrix[j][i] = matrix[i][j].conj()
+                r.matrix[j][i] = matrix[i][j]
             }
         }
         return r
     }
 
-    fun isHermitian(): Boolean {
-        return equals(transpose().conj())
-    }
+
+    fun isHermitian(): Boolean = equals(transpose().conj())
+
 
     fun print(colWidth: Int = 3, formatFn: ((Complex) -> String)? = null) {
         for(row in matrix) {
@@ -247,3 +278,5 @@ data class Matrix(val rows: Int = 2, val cols: Int = 2) {
         return result
     }
 }
+
+operator fun Complex.times(m: Matrix): Matrix = m.apply { this * it }

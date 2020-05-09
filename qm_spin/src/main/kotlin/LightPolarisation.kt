@@ -53,9 +53,9 @@ private fun printPrimaryOperators() {
 private val cw = Ket("↻", 1.0/sqrt(2.0), I/sqrt(2.0))
 private val ac = Ket("↺", 1.0/sqrt(2.0), -I/sqrt(2.0))
 
-fun th(angle: Double) = Ket("$angle°", cos(angle.radians), sin(angle.radians))
+private fun th(angle: Double) = Ket("$angle°", cos(angle.radians), sin(angle.radians))
 
-fun H(angle: Double) = Matrix(2, 2,
+private fun H(angle: Double) = Matrix(2, 2,
     cos(2 * angle.radians), sin(2 * angle.radians),
     sin(2 * angle.radians), -cos(2 * angle.radians)
 )
