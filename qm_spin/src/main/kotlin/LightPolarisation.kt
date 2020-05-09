@@ -4,7 +4,8 @@ private val x = Ket("x", 1.R, 0.R)
 private val y = Ket("y", 0.R, 1.R)
 private val f = Ket("/", 1.0/sqrt(2), 1.0/sqrt(2))
 private val b = Ket("\\", 1.0/sqrt(2), -1.0/sqrt(2))
-
+private val cw = Ket("↻", 1.0/sqrt(2), I/sqrt(2))
+private val ac = Ket("↺", 1.0/sqrt(2), -I/sqrt(2))
 
 private val eigenVectors = mapOf(
     (x to 1.00) to "x",
@@ -117,6 +118,16 @@ fun main() {
     probabilityOf(prepare = th(60.0), outcome = th(30.0))
     probabilityOf(prepare = th(0.0), outcome = th(90.0))
     probabilityOf(prepare = th(275.0), outcome = th(180.0))
-
     println(H(90.0) * th(45.0))
+
+    println()
+    println("Circular Polarisation:")
+    probabilityOf(prepare = ac, outcome = cw)
+    probabilityOf(prepare = cw, outcome = ac)
+    probabilityOf(prepare = cw, outcome = cw)
+    probabilityOf(prepare = ac, outcome = ac)
+    probabilityOf(prepare = f, outcome = cw)
+    println()
+    probabilityOf(prepare = th(60.0), outcome = cw)
+
 }
