@@ -1,17 +1,10 @@
 import mathutil.*
-import java.lang.Math.PI
 
 private val x = Ket("x", 1.R, 0.R)
 private val y = Ket("y", 0.R, 1.R)
 private val f = Ket("/", 1.0/sqrt(2), 1.0/sqrt(2))
 private val b = Ket("\\", 1.0/sqrt(2), -1.0/sqrt(2))
 
-fun th(angle: Double) = Ket("$angle°", cos(angle.radians), sin(angle.radians))
-
-fun H(angle: Double) = Matrix(2, 2,
-    cos(2 * angle.radians), sin(2 * angle.radians),
-    sin(2 * angle.radians), -cos(2 * angle.radians)
-)
 
 private val eigenVectors = mapOf(
     (x to 1.00) to "x",
@@ -28,12 +21,41 @@ private val eigenVectors = mapOf(
     (b to Double.NaN) to "\\"
 )
 
-
 private val states = mapOf(
     "x>" to x,
     "y>" to y,
     "/>" to f,
     "\\>" to b
+)
+
+private val operators = mapOf(
+    "H+" to pauli_1,
+    "Hx" to pauli_2,
+    "H*" to pauli_3
+)
+
+private fun printPrimaryOperators() {
+    println("Primary Operators:")
+    operators.forEach {
+        println(it.key + " =")
+        it.value.print(4) { c ->
+            if (c.im == 0.0) {
+                c.re.toInt().toString()
+            } else {
+                c.toString()
+            }
+        }
+        println()
+    }
+}
+
+
+//Generic Eigenvector and H operator generator functions
+fun th(angle: Double) = Ket("$angle°", cos(angle.radians), sin(angle.radians))
+
+fun H(angle: Double) = Matrix(2, 2,
+    cos(2 * angle.radians), sin(2 * angle.radians),
+    sin(2 * angle.radians), -cos(2 * angle.radians)
 )
 
 
@@ -52,13 +74,6 @@ private fun experiment(operator: Matrix, state: Ket): Pair<Ket, Double> {
 }
 
 
-private val operators = mapOf(
-    "H+" to pauli_1,
-    "Hx" to pauli_2,
-    "H*" to pauli_3
-)
-
-
 private fun doExperiment(expr: String) {
     val parts = expr.split('|')
     val op = operators[parts[0]]
@@ -72,8 +87,6 @@ private fun doExperiment(expr: String) {
     }
 }
 
-
-
 fun main() {
     println("Quantum Mechanics - Light Polarisation")
 
@@ -81,6 +94,8 @@ fun main() {
     y.braket()
     f.braket()
     b.braket()
+
+    printPrimaryOperators()
 
     probabilityOf(prepare = x, outcome = x)
     probabilityOf(prepare = x, outcome = y)

@@ -59,7 +59,7 @@ fun main() {
     println()
 
     println("R:")
-    R.print(asIntegers = true)
+    R.print(formatFn = { c -> c.re.toInt().toString() })
     println()
     println("Expectation Value <Ψ|R|Ψ> = " + (R * psi).toBra().innerProduct(psi))
     println();

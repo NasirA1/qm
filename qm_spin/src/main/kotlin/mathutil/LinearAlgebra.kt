@@ -209,11 +209,11 @@ data class Matrix(val rows: Int = 2, val cols: Int = 2) {
         return equals(transpose().conj())
     }
 
-    fun print(colWidth: Int = 3, asIntegers: Boolean = false) {
+    fun print(colWidth: Int = 3, formatFn: ((Complex) -> String)? = null) {
         for(row in matrix) {
             for(col in row) {
-                if(asIntegers) {
-                    print("${col.re.toInt()}".padStart(colWidth))
+                if(formatFn != null) {
+                    print(formatFn(col).padStart(colWidth))
                 } else {
                     print("$col".padStart(colWidth))
                 }
