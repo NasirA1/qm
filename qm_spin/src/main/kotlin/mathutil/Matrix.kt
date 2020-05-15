@@ -1,10 +1,19 @@
 package mathutil
 
 import java.lang.StringBuilder
+import java.lang.UnsupportedOperationException
 import java.security.InvalidParameterException
 
 
 data class Matrix(val rows: Int = 2, val cols: Int = 2) {
+
+    companion object {
+        fun makeIdentityMatrix(size: Int): Matrix {
+            val createRow: (Int) -> IntArray = { onePos -> IntArray(size) { if(it == onePos) 1 else 0 } }
+            val ys = (0 until size).map(createRow).flatMap { it.asList() }.toIntArray()
+            return Matrix(size, size, *ys)
+        }
+    }
 
     private var matrix: Array<Array<Complex>> = arrayOf()
 
@@ -35,6 +44,15 @@ data class Matrix(val rows: Int = 2, val cols: Int = 2) {
     val elementCount: Int get() = rows * cols
 
     val isHermitian: Boolean get() = equals(transpose().conj())
+
+    val determinant: Complex get() = if(rows == 2 && cols == 2) {
+        (matrix[0][0] * matrix[1][1]) - (matrix[0][1] * matrix[1][0])
+    } else throw UnsupportedOperationException("I don't know how to calculate the determinant of rows $rows and cols $cols")
+
+    val inverse: Matrix get() = if(rows == 2 && cols == 2) {
+        val swapNegated = arrayOf(matrix[1][1], -matrix[0][1], -matrix[1][0], matrix[0][0])
+        (1.0/determinant) * Matrix(2, 2, *swapNegated)
+    } else throw UnsupportedOperationException("I don't know how to calculate the determinant of rows $rows and cols $cols")
 
     fun toArray(): Array<Complex> {
         val r = mutableListOf<Complex>()
@@ -247,4 +265,25 @@ fun main() {
     (m1 * m2).print(4) { it.re.toInt().toString() }
     println()
 
+    val id: Matrix = Matrix.makeIdentityMatrix(5)
+    val m3 = Matrix(5, 5, *(1..25).toList().toIntArray())
+    id.print { it.re.toInt().toString() }
+    println()
+    m3.print { it.re.toInt().toString() }
+    println()
+    (m3 * id).print { it.re.toInt().toString() }
+    println()
+
+    println("m1:")
+    m1.print { it.re.toInt().toString() }
+    println(message = "Determinant of m1: ${m1.determinant}")
+    println()
+
+    println("Inverse of m1:")
+    m1.inverse.print(7) { it.re.round(2).toString() }
+    println()
+
+    println("m1 * inverse(m1):")
+    (m1 * m1.inverse).print(6) { it.re.round(2).toString() }
+    println()
 }
