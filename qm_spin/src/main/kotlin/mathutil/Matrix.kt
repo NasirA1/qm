@@ -246,8 +246,5 @@ fun main() {
     println("m1 * m2:")
     (m1 * m2).print(4) { it.re.toInt().toString() }
     println()
-    println("m1 / m2:")
-    (m1 / m2).print(4) { it.re.toString() }
-    println()
 
 }
