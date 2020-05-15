@@ -62,7 +62,7 @@ private fun H(angle: Double) = Matrix(2, 2,
 
 
 private fun experiment(operator: Matrix, state: Ket): Pair<Ket, Double> {
-    val resultantVector = operator `|` state
+    val resultantVector = operator * state
     if(resultantVector == state)
         return state to 1.0
     else {

@@ -44,7 +44,7 @@ private val states = mapOf(
 
 
 private fun experiment(operator: Matrix, state: Ket): Pair<Ket, Double> {
-    val resultantVector = operator `|` state
+    val resultantVector = operator * state
     if(resultantVector == state)
         return state to 1.0
     else {
@@ -82,11 +82,17 @@ private fun doExperiment(expr: String) {
 private fun th(angle: Double) = Ket("$angle°", cos(angle.radians) / 2, sin(angle.radians) / 2)
 
 
+// ======================================== Generalisation ============================================
 private fun sn(nx: Double, ny: Double, nz: Double) = (nx.R * pauli_2) + (ny.R * pauli_3) + (nz.R * pauli_1)
 
+private fun sn_normalising_factor(nz: Double) = sqrt((1.0 + nz) / 2.0)
+private fun gamma(nx: Double, ny: Double, nz: Double) = run {
+    val r = (1.R - nz.R) / (nx.R - (ny * I))
+    if(r == NaN) 0.R
+    else r
+}
+private fun psi(nx: Double, ny: Double, nz: Double) = sn_normalising_factor(nz) * Ket("Ψ", 1.R, gamma(nx, ny, nz))
 
-//TODO NASIR
-private fun psi(nx: Double, ny: Double, nz: Double) = Ket("Ψ", sqrt((1.R+nz)/2.R) * )
 
 
 fun main() {
@@ -142,8 +148,33 @@ fun main() {
 
     probabilityOf(prepare = th(45.0), outcome = u)
     probabilityOf(prepare = th(0.0), outcome = th(0.0))
+    println()
+
+    println("\n======================= Generalisation =====================\n")
+    println("σn(x) = ")
+    sn(1.0, 0.0, 0.0).print(5)
+    println("\nσn(y) = ")
+    sn(0.0, 1.0, 0.0).print(5)
+    println("\nσn(z) = ")
+    sn(0.0, 0.0, 1.0).print(5)
+    println()
 
     println()
-    println("σn = ")
-    sn(90.0, 90.0, 90.0).print(15)
+    println("|r> = " + r.toString(7, true))
+    println("${psi.label}(x) =" + psi(1.0, 0.0, 0.0).toString(7, true))
+    println("|i> = " + i.toString(7, true))
+    println("${psi.label}(y) =" + psi(0.0, 1.0, 0.0).toString(7, true))
+    println("|u> = " + u.toString(7, true))
+    println("${psi.label}(z) =" + psi(0.0, 0.0, 1.0).toString(7, true))
+
+    println()
+    println("|l> = " + l.toString(7, true))
+    println("${psi.label}(-x) =" + (psi(-1.0, 0.0, 0.0)).toString(7, true))
+    println("|o> = " + o.toString(7, true))
+    println("${psi.label}(-y) =" + (psi(0.0, -1.0, 0.0)).toString(7, true))
+    println("|d> = " + d.toString(7, true))
+    println("${psi.label}(-z) =" + (psi(0.0, 0.0, -1.0)).toString(7, true))
+
+    println("|<n|m>|²")
+
 }
