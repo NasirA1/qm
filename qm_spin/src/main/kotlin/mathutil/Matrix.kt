@@ -1,5 +1,6 @@
 package mathutil
 
+import sun.plugin.dom.exception.InvalidStateException
 import java.lang.StringBuilder
 import java.lang.UnsupportedOperationException
 import java.security.InvalidParameterException
@@ -45,12 +46,18 @@ data class Matrix(val rows: Int = 2, val cols: Int = 2) {
 
     val isHermitian: Boolean get() = equals(transpose().conj())
 
-    val determinant: Complex get() = if(rows == 2 && cols == 2) {
+    val isUnitary: Boolean get() = transpose().conj() * this == makeIdentityMatrix(rows)
+
+    fun determinant(): Complex = if(rows == 2 && cols == 2) {
         (matrix[0][0] * matrix[1][1]) - (matrix[0][1] * matrix[1][0])
     } else throw UnsupportedOperationException("I don't know how to calculate the determinant of rows $rows and cols $cols")
 
     val inverse: Matrix get() = if(rows == 2 && cols == 2) {
         val swapNegated = arrayOf(matrix[1][1], -matrix[0][1], -matrix[1][0], matrix[0][0])
+        val determinant = determinant()
+        if(determinant == 0.R) {
+            throw InvalidStateException("Inverse not available.  Matrix is Singular, i.e. determinant is 0")
+        }
         (1.0/determinant) * Matrix(2, 2, *swapNegated)
     } else throw UnsupportedOperationException("I don't know how to calculate the determinant of rows $rows and cols $cols")
 
@@ -245,7 +252,9 @@ fun main() {
     println()
 
     println("σ(y) isHermitian? ${sigmaY.isHermitian}")
+    println("σ(y) isUnitary? ${sigmaY.isUnitary}")
     println("m isHermitian? ${m.isHermitian}")
+    println("m isUnitary? ${m.isUnitary}")
     println()
 
     println("Arithmetic:")
@@ -276,7 +285,7 @@ fun main() {
 
     println("m1:")
     m1.print { it.re.toInt().toString() }
-    println(message = "Determinant of m1: ${m1.determinant}")
+    println(message = "Determinant of m1: ${m1.determinant()}")
     println()
 
     println("Inverse of m1:")
@@ -284,6 +293,6 @@ fun main() {
     println()
 
     println("m1 * inverse(m1):")
-    (m1 * m1.inverse).print(6) { it.re.round(2).toString() }
+    (m1 * m1.inverse).print(5) { it.re.round(2).toString() }
     println()
 }
