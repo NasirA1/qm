@@ -101,6 +101,8 @@ data class Matrix(val rows: Int = 2, val cols: Int = 2) {
             println()
         }
     }
+    
+    fun printInts(colWidth: Int = 3) = print(colWidth) { it.re.toInt().toString() }
 
     fun apply(fn: (Complex) -> Complex): Matrix {
         val r = Matrix(rows, cols)
@@ -227,11 +229,11 @@ fun main() {
 
     println("m:")
     val m = Matrix(3, 2, 1, 2, 3, 4, 5, 6)
-    m.print { it.re.toInt().toString() }
+    m.printInts()
     println()
 
     println("m transposed:")
-    m.transpose().print { it.re.toInt().toString() }
+    m.transpose().printInts()
     println()
 
     println("σ(y)")
@@ -261,11 +263,11 @@ fun main() {
     val m1 = Matrix(2, 2, 12, 1, 3, -5)
     val m2 = Matrix(2, 2, 5, 0, 3, 17)
     println("m1:")
-    m1.print { it.re.toInt().toString() }
+    m1.printInts()
     println("m2:")
-    m2.print { it.re.toInt().toString() }
+    m2.printInts()
     println("m1 + m2:")
-    (m1 + m2).print { it.re.toInt().toString() }
+    (m1 + m2).printInts()
     println()
     println("m1 - m2:")
     (m1 - m2).print(4) { it.re.toInt().toString() }
@@ -276,15 +278,15 @@ fun main() {
 
     val id: Matrix = Matrix.makeIdentityMatrix(5)
     val m3 = Matrix(5, 5, *(1..25).toList().toIntArray())
-    id.print { it.re.toInt().toString() }
+    id.printInts()
     println()
-    m3.print { it.re.toInt().toString() }
+    m3.printInts()
     println()
-    (m3 * id).print { it.re.toInt().toString() }
+    (m3 * id).printInts()
     println()
 
     println("m1:")
-    m1.print { it.re.toInt().toString() }
+    m1.printInts()
     println(message = "Determinant of m1: ${m1.determinant()}")
     println()
 
@@ -295,4 +297,10 @@ fun main() {
     println("m1 * inverse(m1):")
     (m1 * m1.inverse).print(5) { it.re.round(2).toString() }
     println()
+
+    println("Singular Matrix:")
+    val sm = Matrix(2, 2, -6, 9, 2, -3)
+    sm.printInts()
+    try { sm.inverse.print() }
+    catch(ex: Throwable) { println(ex.message) }
 }
