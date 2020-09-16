@@ -5,7 +5,7 @@ import java.util.*
 
 
 fun main() {
-    // د ستونزې گراف
+    // د چلينج د ستونزې گراف
     val labels = arrayOf("A", "B", "C", "D", "E", "F")
     val graph = arrayOf(
         //              A   B   C   D   E   F
@@ -22,7 +22,7 @@ fun main() {
     // د گراف د گاونډيتوب جدول پر پرده باندې ښكاره كول
     printAdjacencyMatrix(labels, graph)
 
-    // د ډايسكسټرا د الگوريديم له لارې لنډترينې لارې موندل
+    // د ډايكسټرا د الگوريديم له لارې د لنډترينې لارې موندل
     val (previous, distances) = dijkstra(src, graph)
 
     // د پيل څخه تر منزله پورې د لنډترينې لارې د مسير جوړول
