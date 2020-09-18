@@ -29,7 +29,9 @@ fun main() {
     val path = makePath(src, dest, labels, previous)
 
     // پايله پر پرده باندې ښكاره كول
-    println("\n د ${labels[src]} څخه ${labels[dest]} ته لنډترينه لاره: ")
+    println("\n")
+    println(" د ${labels[src]} څخه تر ${labels[dest]} پورې لنډترينه لار: ")
+    //println(":پورې لنډترينه لار ${labels[dest]} څخه تر ${labels[src]} د")
     println("$path (${distances[dest]})")
 }
 
